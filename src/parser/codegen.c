@@ -353,14 +353,16 @@ static void emitStatement(Statement stmt, Allocator ally,
     emitStatement(*stmt.if_statement->consequence, ally, temporaries, out,
                   branch_labels, loop_labels, call_labels, names,
                   outer_assignments, functions);
-    appendManyCString(out, "@goto :");
+   
+    if (stmt.if_statement->alternate) {
+       appendManyCString(out, "@goto :");
     temporary_string_len =
         (size_t)sprintf(temporary_string, "_endif%lu_", branch_label);
     branch_slice =
         (Slice(char)){.ptr = temporary_string, .len = temporary_string_len};
     appendSlice(out, char, branch_slice);
     appendManyCString(out, "\r\n");
-    if (stmt.if_statement->alternate) {
+      
       appendManyCString(out, ":");
       temporary_string_len =
           (size_t)sprintf(temporary_string, "_else%lu_", branch_label);
